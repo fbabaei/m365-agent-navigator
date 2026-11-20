@@ -1,0 +1,47 @@
+{
+  "catalog_name": "Replace with your sanitized organization catalog",
+  "scope": "Specify the caller group and host; do not include personal identifiers",
+  "review_interval_days": null,
+  "agents": [
+    {
+      "name": "EXAMPLE - Policy Desk",
+      "illustrative": true,
+      "publisher": "Your organization",
+      "capabilities": [
+        "Answer HR policy questions with citations from the approved library"
+      ],
+      "limitations": [
+        "No policy changes",
+        "No cross-app document workflow"
+      ],
+      "hosts": [
+        "Microsoft 365 Copilot"
+      ],
+      "environment": null,
+      "sources": [
+        {
+          "description": "Approved HR policy library",
+          "authoritative_for": "HR policy",
+          "caller_access": "unknown",
+          "scope": null,
+          "evidence": null
+        }
+      ],
+      "approval": {
+        "status": "unknown",
+        "scope": null,
+        "evidence": null
+      },
+      "availability": {
+        "status": "unknown",
+        "scope": null,
+        "evidence": null
+      },
+      "required_skills_or_connectors": [],
+      "data_handling_constraints": [],
+      "action_scope": "Answers only; no write actions",
+      "reviewed_at": null,
+      "capability_evidence": "Illustration only; replace with a sanitized approved description"
+    }
+  ]
+}
