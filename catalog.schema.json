@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "catalog.schema.json",
+  "title": "M365 Agent Navigator organization catalog",
+  "type": "object",
+  "required": ["catalog_name", "scope", "agents"],
+  "properties": {
+    "catalog_name": { "type": "string", "minLength": 1 },
+    "scope": { "type": "string", "minLength": 1 },
+    "review_interval_days": { "type": ["integer", "null"], "minimum": 1 },
+    "agents": { "type": "array", "items": { "$ref": "#/$defs/agent" } }
+  },
+  "$defs": {
+    "evidenceState": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": { "enum": ["granted", "approved", "available", "blocked", "revoked", "unknown"] },
+        "scope": { "type": ["string", "null"] },
+        "evidence": { "type": ["string", "null"] }
+      }
+    },
+    "agent": {
+      "type": "object",
+      "required": ["name", "illustrative", "capabilities", "hosts", "sources", "approval", "availability", "action_scope"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "illustrative": { "type": "boolean" },
+        "publisher": { "type": ["string", "null"] },
+        "capabilities": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "limitations": { "type": "array", "items": { "type": "string" } },
+        "hosts": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "environment": { "type": ["string", "null"] },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["description", "caller_access"],
+            "properties": {
+              "description": { "type": "string" },
+              "authoritative_for": { "type": ["string", "null"] },
+              "caller_access": { "enum": ["granted", "blocked", "revoked", "unknown"] },
+              "scope": { "type": ["string", "null"] },
+              "evidence": { "type": ["string", "null"] }
+            }
+          }
+        },
+        "approval": { "$ref": "#/$defs/evidenceState" },
+        "availability": { "$ref": "#/$defs/evidenceState" },
+        "required_skills_or_connectors": { "type": "array", "items": { "type": "string" } },
+        "data_handling_constraints": { "type": "array", "items": { "type": "string" } },
+        "action_scope": { "type": "string" },
+        "reviewed_at": { "type": ["string", "null"], "format": "date" },
+        "capability_evidence": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

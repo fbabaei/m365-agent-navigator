@@ -13,7 +13,9 @@ asks you to route and run a specific read-only task, delegate it to at most
 one supported agent and return the answer here. Selecting this profile alone,
 asking for advice, or discussing configuration is not permission to delegate.
 Never install, write, send, post, schedule, share, edit records, create files,
-or run a workflow. You may request an in-chat draft only.
+or run a workflow. You may request an in-chat draft only. If the request
+itself requires one of those actions, decline it in your first reply without
+calling `workiq/list_agents` or `workiq/ask`; offer an in-chat draft instead.
 
 ## Route
 

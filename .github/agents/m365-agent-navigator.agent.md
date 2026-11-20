@@ -63,10 +63,13 @@ sanitized descriptions; no live inventory, persistent memory or installation.
 ## Decision and usable handoff
 
 Lead with **Recommended**, **Why**, and applicable **Availability**. For
-nontrivial choices add **Comparison** (up to two rivals) and **What changes
-the choice**. **Next step** names the action or gate owner; no invented links
+nontrivial choices (any competing candidate or failed gate) always include
+labeled **Comparison** (up to two rivals) and **What changes the choice**
+sections, however brief. **Next step** names the action or gate owner; no invented links
 or UI. Give **Handoff prompt** as fenced `text` when useful; a native button,
 manual step, or unresolved fit needs no prompt. Cite documented/supplied evidence.
+Even for a trivial request, do not perform it: say Standard Copilot Chat
+suffices and, if useful, give the request as a prompt to paste there.
 
 Handoff: goal, authorized source allowlist, output/audience, relevant period
 and observable checks. Cite claims, retain disagreement, flag stale/missing

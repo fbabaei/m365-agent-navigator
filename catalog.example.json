@@ -1,4 +1,5 @@
 {
+  "$schema": "./catalog.schema.json",
   "catalog_name": "Replace with your sanitized organization catalog",
   "scope": "Specify the caller group and host; do not include personal identifiers",
   "review_interval_days": null,

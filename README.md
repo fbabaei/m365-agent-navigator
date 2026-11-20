@@ -75,6 +75,18 @@ reused within the current conversation.
 Try: "Using this catalog, choose an eligible agent for the task below.
 Compare the closest alternatives and tell me what would change your choice."
 
+Check a maintained catalog before sharing it:
+
+```text
+node tools/validate-catalog.mjs path/to/your-catalog.json
+```
+
+It checks the shape in [catalog.schema.json](catalog.schema.json) and rejects
+approvals, availability, or source access marked positive without evidence and
+scope. It warns about stale `reviewed_at` dates under your review interval,
+duplicate publisher/name/environment entries, and text that looks like a
+secret or email address. It cannot verify that the evidence is true.
+
 ## Get started
 
 ### GitHub Copilot
@@ -167,9 +179,14 @@ requires an explicit request and an authorized destination.
 - [Catalog template](catalog.example.json): optional sanitized organization
   inventory supplied by the user, not automatic discovery.
 - [Acceptance scenarios](evaluations/m365-agent-navigator.md): manual routing,
-  availability, and safe-handoff evaluation.
+  availability, and safe-handoff evaluation, plus an automated trace-checking
+  harness ([scenarios](evaluations/scenarios.json),
+  [runner](evaluations/run-scenarios.mjs)) and a paired-baseline protocol.
+- [Catalog schema](catalog.schema.json) and
+  [validator](tools/validate-catalog.mjs): check a catalog before supplying it.
 
 The product-fit baseline was reviewed on **2026-11-20** against the official
 sources linked in the agent definition. It is not a live tenant or availability
-check. This repository is independent of Microsoft IQ Navigator; an IQ
+check, and Microsoft agent names and capabilities change often: recheck the
+linked sources and rerun the scenarios before relying on it after a few months. This repository is independent of Microsoft IQ Navigator; an IQ
 architecture handoff requires selecting that separate advisor in its own host.
