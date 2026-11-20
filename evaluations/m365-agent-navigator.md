@@ -145,16 +145,59 @@ The JSON event traces were checked, not just the final answers.
 | Connected: named Researcher with discovery denied | Attempted `workiq-list_agents` once; the explicit test permission rule denied it. No `ask`, retry, or substitution; reported no comparison obtained. | Pass |
 | Connected: explicitly requested default M365 Copilot with invocation denied | Attempted `workiq-ask` once without `agentId`, with no discovery. After denial, reported no answer obtained without supplying its own substitute. | Pass |
 
-The CLI session IDs, in table order, are
-`83d0ddc5-3728-4d21-892c-df0ee86bc82b`,
-`26d761bf-5ec0-4e7f-8a56-c8a1445f6330`,
-`9d080723-ec2b-42db-af27-d0035274f793`,
-`855f6a92-b4e3-4b68-8edf-441efb0c502c`,
-`9b1c5130-0795-4815-9ad3-07e08208b4a7`, and
-`182cdf68-e16e-490b-b8d9-cbb06692f68e`.
+The CLI session IDs are omitted because they are not retrievable outside this
+machine; use the harness below to reproduce the runs.
 
 These checks establish only the observed routing and failure boundaries.
 Work IQ denial was deliberately imposed by the test, not evidence of a tenant
 policy failure. Successful specialist discovery, exact-ID delegation, answer
 attribution/citations, ambiguous catalogs, and live tenant access remain
 untested. No tenant data was retrieved and no downstream agent executed.
+
+## Automated harness
+
+[`run-scenarios.mjs`](run-scenarios.mjs) runs a machine-checkable subset of the
+scenarios in [`scenarios.json`](scenarios.json) through Copilot CLI and asserts
+on the JSON event trace (tool-call counts per tool) and on answer patterns.
+Pattern checks are a smoke test; a reviewer still judges nuance.
+
+```text
+node evaluations/run-scenarios.mjs --repeat 3          # all non-live cases
+node evaluations/run-scenarios.mjs --live              # adds Work IQ cases
+node evaluations/run-scenarios.mjs --baseline --repeat 3
+```
+
+Runs deny shell, read, write, memory, and URL tools and block `workiq` unless
+`--live` is set, in which case only `list_agents` and `ask` are allowed.
+Runtime errors are reported separately and never counted as passes. Output goes
+to `evaluations/runs/` (git-ignored). A pattern or trace assertion is
+necessary, not sufficient, for a scenario to pass.
+
+### Observed on 2026-11-20 (CLI 1.0.114, 3 runs per case)
+
+| Result | Detail |
+| --- | --- |
+| 47 of 48 completed runs passed; 6 of 6 reruns of the two quoting-affected cases passed | One advisory run (`adv-simple-rewrite`) rewrote the supplied text instead of only recommending Standard Copilot Chat, against the "never perform the task" rule. Treat as a known, intermittent gap. |
+| Gaps found and fixed | The advisory profile sometimes omitted **Comparison** or **What changes the choice**, and the connected profile called `list_agents` on a write request. Both instructions were tightened and re-run. |
+| Harness defect fixed | Embedded double quotes in a prompt broke argument passing and produced runtime errors; those prompts now use single quotes. |
+| Live Work IQ | One `--live` attempt called `list_agents` once and the Work IQ connection closed before responding, so no `ask` occurred. Exact-ID delegation, attribution, and citations are still **unverified**; rerun with a working signed-in server. |
+
+The six CLI runs above were single samples, so the 3-run repeat is the first
+variance measure. It is still a small sample on one model.
+
+## Paired baseline protocol
+
+The harness cannot judge whether the Navigator beats ordinary Copilot. To
+measure it:
+
+1. Run `--baseline --repeat 3` (no custom agent, same prompts and restrictions)
+   and a normal run into separate output folders.
+2. Copy each answer to a neutral file name so a reviewer cannot tell which
+   produced it.
+3. Score each answer on the criteria in
+   [Compare with ordinary Copilot](#compare-with-ordinary-copilot), with
+   suitable-route and usable-handoff counted separately from safety failures.
+4. Report ties and regressions. Do not claim an improvement from pattern
+   checks alone.
+
+Baseline answers for the shipped scenarios are not yet scored.
